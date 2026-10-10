@@ -1,8 +1,8 @@
 # sidstack
 
-My personal agent stack: the skills, workflows, and principles I want every coding agent to follow when it works with me.
+My personal agent stack: the global rules, skills, principles, and guard hook I want every coding agent to follow when it works with me.
 
-The content is plain `SKILL.md` folders (the Agent Skills format). Claude Code, Codex, and Hermes all read it. The Claude Code manifest is a thin pointer at the one `skills/` directory, so switching agents means adding a small manifest, not rewriting anything.
+The content is plain markdown: an `AGENTS.md` for the standing rules and `SKILL.md` folders for the skills (the Agent Skills format). Claude Code, Codex, and Hermes all read both. The Claude Code manifest is a thin pointer at the one `skills/` directory, so switching agents means adding a small manifest, not rewriting anything.
 
 ## Install
 
@@ -13,40 +13,64 @@ The content is plain `SKILL.md` folders (the Agent Skills format). Claude Code, 
 /plugin install sidstack@sidstack
 ```
 
-Skills show up namespaced: `/sidstack:plain-writing`.
+Skills show up namespaced (`/sidstack:proofreading`) and the guard hook is active immediately.
+
+**Global rules** (`AGENTS.md`) are not delivered by the plugin; a plugin cannot inject instructions into other projects. Copy or import them once per machine:
+
+```
+# Claude Code: import into your user-level CLAUDE.md
+echo '@/path/to/sidstack/AGENTS.md' >> ~/.claude/CLAUDE.md
+# Codex
+cp /path/to/sidstack/AGENTS.md ~/.codex/AGENTS.md
+```
 
 **Codex / Hermes / anything else that reads `SKILL.md`**: symlink or copy `skills/*` into the agent's skills directory. Nothing in `skills/` depends on a platform.
 
 ## Layout
 
 ```
-skills/                 the only part that matters; one folder per skill
+AGENTS.md               global rules: responses, think before coding, simplicity, surgical changes, verify
+.claude/CLAUDE.md       imports AGENTS.md (one source; a root CLAUDE.md fails plugin validation)
+skills/                 one folder per skill, flat (the plugin loader does not read nested folders)
   principle-*/          one principle per folder, one rule each
-docs/PHILOSOPHY.md      how I work + index of principles
+docs/PHILOSOPHY.md      index of principles + how to add one
 hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
 .claude-plugin/         Claude Code manifest + single-plugin marketplace
-scripts/validate.sh     structural checks (frontmatter, names, version drift)
-.github/workflows/      runs the checks + `claude plugin validate --strict`
+scripts/validate.sh     structural checks (frontmatter, names, version drift, hook regexes)
+.github/workflows/      runs the checks, guard tests, shellcheck, `claude plugin validate --strict`
 ```
 
-Naming: flat `skills/` with prefixes. `principle-*` for principles, `workflow-*` for multi-step playbooks, no prefix for ordinary skills.
+`skills/` stays flat on purpose: Claude Code's plugin loader only finds `skills/<name>/SKILL.md`, one level deep (tested; a nested skill is silently skipped). Grouping lives in the tables below and in `principle-*` / `workflow-*` prefixes.
 
 ## Skills
+
+**Writing and communication**
 
 | skill | use it when |
 |---|---|
 | `plain-writing` | the general writing standard: short, direct, plain English, no filler, no invented facts. |
 | `proofreading` | proofread, "rewrite in my tone", "improve this", or draft a workplace message or slide script for me. Smallest change that fixes it. |
-| `ticket-writing` | write, improve, simplify, or split a ticket or issue for any tracker. No names, no invented facts, done-when checks. |
 | `reply-to-thread` | I paste a thread or comment: what are they saying, what do they want from me, my position, then a reply in my voice. |
-| `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
+| `ticket-writing` | write, improve, simplify, or split a ticket or issue for any tracker. No names, no invented facts, done-when checks. |
 | `bro` | the last message was jargon; restate it like one human talking to another. |
+
+**Thinking and teaching**
+
+| skill | use it when |
+|---|---|
 | `grill-me` | I have a plan or design and want it stress-tested one question at a time before building. |
 | `show-me` | I would understand the topic faster as a diagram, call tree, diff, or one HTML page than as prose. |
+| `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
 
-Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos.
+**Principles**
 
-Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.
+| skill | rule |
+|---|---|
+| `principle-verify-before-claiming` | Check the real artifact after the last change before saying done, fixed, passing, or merged. If you did not check, say so. |
+
+Full index and reasoning: [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md).
+
+Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos. Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.
 
 ## Hooks
 
@@ -62,21 +86,14 @@ Other agents that pass hook JSON on stdin and honor exit 2 (Codex) can point at 
 
 Every pattern has a case in `hooks/test-guard.sh` (151 asserts, runs in CI). To add a pattern: add the block case and a nearby allow case to the test first, then the regex. Override the list with `SIDSTACK_DANGEROUS_PATTERNS=/path/to/file`.
 
-## Principles
-
-| principle | rule |
-|---|---|
-| `principle-verify-before-claiming` | Check the real artifact after the last change before saying done, fixed, passing, or merged. If you did not check, say so. |
-
-Full list and the reasoning behind them: [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md).
-
 ## Adding a skill
 
 1. `mkdir skills/<name>` and write `SKILL.md` with `name: <name>` and a `description` that states the trigger in the words I would actually say. The description is the only thing loaded until the skill fires.
 2. Procedure first, in execution order. One clause of why per rule. Say what the skill must not invent. End with the gate that means done.
 3. If it is adapted from elsewhere, add an `## Origin` section: source link, author, license, what changed.
-4. Bump `version` in both manifests under `.claude-plugin/` (`scripts/validate.sh` checks they agree). Installed copies only update when the version changes.
-5. `scripts/validate.sh && claude plugin validate . --strict`.
+4. Add it to the right table above.
+5. Bump `version` in both manifests under `.claude-plugin/` (`scripts/validate.sh` checks they agree). Installed copies only update when the version changes.
+6. `scripts/validate.sh && claude plugin validate . --strict`.
 
 ## License
 

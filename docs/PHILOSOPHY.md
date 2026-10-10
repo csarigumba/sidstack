@@ -1,14 +1,6 @@
 # Philosophy
 
-How I want an agent to work with me. This is the index a future routing skill (`/sid-mode`) will read at task start. Each principle is one short skill under `skills/principle-*/` so other skills can reference it by name.
-
-## How I work
-
-- Work in short, focused blocks. Finish one verifiable unit before starting the next.
-- Plain English, short replies, a clear position. Match reply length to the weight of the ask.
-- Say what is verified and what is not. Never overstate evidence.
-- Prefer the smallest change that solves the problem. Delete before adding.
-- Decide low-stakes things yourself; ask only when the answer changes the design.
+The rules every agent follows when working with me live in [`AGENTS.md`](../AGENTS.md) at the repo root (`.claude/CLAUDE.md` imports it). This file is the index of the principle skills: one rule per skill under `skills/principle-*/`, so other skills can reference a principle by name and a future routing skill can read this index at task start.
 
 ## Principles
 
@@ -22,4 +14,5 @@ Groups to grow into: `core`, `architecture`, `verification`, `delegation`, `meta
 
 1. Create `skills/principle-<name>/SKILL.md`. One rule, one clause of why, how to apply, the smells that mean it was skipped.
 2. Add a row to the table above.
-3. Run `scripts/validate.sh`.
+3. If it is a rule every agent should follow always, add one line to `AGENTS.md` too. The skill holds the detail; `AGENTS.md` holds the one-liner.
+4. Run `scripts/validate.sh`.
