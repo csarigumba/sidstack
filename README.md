@@ -74,6 +74,7 @@ Each category folder is listed in `plugin.json` under `skills` (an array of dire
 | `show-me` | I would understand the topic faster as a diagram, call tree, diff, or one HTML page than as prose. |
 | `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
 | `sparring-partner` | `/spar`: I must state my position first, then it attacks it hard before giving its own view. For judgment calls, not lookups. |
+| `tarantino-method` | monthly night review: I dump what stresses or blocks me plus my own fix, it returns a three-column table with a direct verdict and checkable actions, and checks last month's actions first. |
 | `anki` | turn source material into Anki cloze cards (Wozniak's 20 rules), or `/curate` an existing deck down 40-60%. Outputs a pipe-separated `.txt`. |
 
 **Visuals** (one design system across all three: warm paper, five accents rotated per section, system fonts, drawn SVG figures, auto dark mode, no external requests, no emoji)
