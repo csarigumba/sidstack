@@ -30,11 +30,7 @@ Write the way I write: short, direct, plain English with a clear position. The r
 
 ## Proofreading and "rewrite in my tone"
 
-- Make the smallest change that fixes it. Keep wording, tone, and paragraph structure; fix grammar quietly.
-- "Proofread" = smallest fix. "Improve it" = fuller rewrite that still sounds like me, then list what changed.
-- Do not add line breaks, headers, or bullets that were not in the original.
-- Do not change or shorten links.
-- Return the text directly, no preamble.
+Use the `proofreading` skill; it carries the job-sizing rules (proofread vs rewrite vs improve) and my message patterns. This skill is the general writing standard behind it.
 
 ## Do not invent
 

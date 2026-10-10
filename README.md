@@ -34,10 +34,15 @@ Naming: flat `skills/` with prefixes. `principle-*` for principles, `workflow-*`
 
 | skill | use it when |
 |---|---|
-| `plain-writing` | drafting, rewriting, or proofreading anything in my voice: short, direct, plain English, no filler, no invented facts. |
+| `plain-writing` | the general writing standard: short, direct, plain English, no filler, no invented facts. |
+| `proofreading` | proofread, "rewrite in my tone", "improve this", or draft a workplace message or slide script for me. Smallest change that fixes it. |
+| `ticket-writing` | write, improve, simplify, or split a ticket or issue for any tracker. No names, no invented facts, done-when checks. |
+| `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
 | `bro` | the last message was jargon; restate it like one human talking to another. |
 | `grill-me` | I have a plan or design and want it stress-tested one question at a time before building. |
 | `show-me` | I would understand the topic faster as a diagram, call tree, diff, or one HTML page than as prose. |
+
+Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos.
 
 Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.
 
