@@ -2,7 +2,7 @@
 
 My personal agent stack: the global rules, skills, principles, and guard hook I want every coding agent to follow when it works with me.
 
-The content is plain markdown: an `AGENTS.md` for the standing rules and `SKILL.md` folders for the skills (the Agent Skills format). Claude Code, Codex, and Hermes all read both. The Claude Code manifest is a thin pointer at the one `skills/` directory, so switching agents means adding a small manifest, not rewriting anything.
+The content is plain markdown: an `AGENTS.md` for the standing rules and `SKILL.md` folders for the skills (the Agent Skills format). Claude Code installs it as a plugin; Hermes loads the same folder through `skills.external_dirs`; Codex reads the files directly. The Claude Code manifest is a thin pointer at the one `skills/` directory, so switching agents means adding a small manifest, not rewriting anything.
 
 ## Install
 
@@ -24,7 +24,16 @@ echo '@/path/to/sidstack/AGENTS.md' >> ~/.claude/CLAUDE.md
 cp /path/to/sidstack/AGENTS.md ~/.codex/AGENTS.md
 ```
 
-**Codex / Hermes / anything else that reads `SKILL.md`**: symlink or copy `skills/*/*` into the agent's skills directory (or point it at `skills/` if it walks folders). Nothing in `skills/` depends on a platform.
+**Hermes Agent**: point Hermes at the `skills/` folder; it already walks the `category/skill/SKILL.md` layout. No copy, no symlink; `git pull` is the update.
+
+```
+hermes config set skills.external_dirs '["/path/to/sidstack/skills"]'
+hermes skills list        # source = external
+```
+
+If a skill with the same name already exists in `~/.hermes/skills/`, the local copy wins and the sidstack one is logged as shadowed. Delete the local copy to use the repo version. For the global rules, Hermes reads `AGENTS.md` only from the current directory; put the standing rules in `~/.hermes/SOUL.md` or keep them in `~/.claude/CLAUDE.md` for Claude Code.
+
+**Codex / anything else that reads `SKILL.md`**: symlink or copy `skills/*/*` into the agent's skills directory (or point it at `skills/` if it walks folders). Nothing in `skills/` depends on a platform.
 
 ## Layout
 
