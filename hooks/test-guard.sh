@@ -3,6 +3,7 @@
 # Feeds dangerous and safe commands through the hook in the Claude Code / Codex
 # payload shape (.tool_input.command) and asserts exit 2 = block, exit 0 = allow.
 # Usage: hooks/test-guard.sh        (needs jq)
+# shellcheck disable=SC2016  # fixtures are literal command strings; $HOME must not expand
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GUARD="$SCRIPT_DIR/deny-dangerous.sh"
