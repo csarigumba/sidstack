@@ -37,6 +37,7 @@ Naming: flat `skills/` with prefixes. `principle-*` for principles, `workflow-*`
 | `plain-writing` | the general writing standard: short, direct, plain English, no filler, no invented facts. |
 | `proofreading` | proofread, "rewrite in my tone", "improve this", or draft a workplace message or slide script for me. Smallest change that fixes it. |
 | `ticket-writing` | write, improve, simplify, or split a ticket or issue for any tracker. No names, no invented facts, done-when checks. |
+| `reply-to-thread` | I paste a thread or comment: what are they saying, what do they want from me, my position, then a reply in my voice. |
 | `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
 | `bro` | the last message was jargon; restate it like one human talking to another. |
 | `grill-me` | I have a plan or design and want it stress-tested one question at a time before building. |

@@ -10,41 +10,48 @@ A ticket is read by someone who was not in the conversation, often weeks later. 
 ## Procedure
 
 1. **Collect the facts from the source.** Read the thread, comment, screenshot, or notes I gave. List: the problem or request, why it matters, who is affected, constraints already decided, anything explicitly out of scope. If a fact is missing, keep it missing; a ticket with a visible gap gets fixed, an invented fact ships.
-2. **Write the title.** One line, under ~70 characters, stating the outcome or the defect, not the activity. "Failed uploads leave orphaned videos" beats "Investigate upload issue". Keep the team's prefix convention (`[Bug]`, `[Parent]`, component tag) if the tracker uses one.
-3. **Write the description** in this shape, dropping any section that would be empty:
-
-   ```markdown
-   ## Background
-   2-4 sentences: what is happening today and why it is a problem. Link the source thread or ticket.
-
-   ## Goal
-   One sentence: the state we want after this ticket is done.
-
-   ## Scope
-   - In: ...
-   - Out: ...
-
-   ## Tasks (if known)
-   1. ...
-
-   ## Done when
-   - Observable checks, not activities. "Upload failures leave no orphaned asset within 5 minutes", not "fix the cleanup".
-
-   ## Notes
-   Constraints, decisions already made, open questions marked as questions.
-   ```
-
+2. **Write the title.** One line, under about 70 characters, stating the outcome or the defect, not the activity. "Failed uploads leave orphaned videos" beats "Investigate upload issue". Keep the team's prefix convention (`[Bug]`, `[Parent]`, component tag) if the tracker uses one.
+3. **Write the description** in the shape below, dropping any section that would be empty.
 4. **Remove people.** No personal names in title or description; refer to roles ("the reviewer", "the AI team") or link the comment instead. Names date the ticket and turn a work item into a conversation log.
 5. **Cut filler.** No "we need to", "it would be nice", "as discussed", or restating the title in the first line. Each sentence carries a fact or a decision.
 6. **Splitting.** When asked for sub-tickets or a parent: the parent holds Background, Goal, and the list of children; each child gets its own Goal and Done-when and links the parent. One deliverable per child. Do not create a child for work that is not yet decided; list it under Notes in the parent as an open question.
-7. **Improving an existing ticket.** Keep the tracker's existing key, labels, and links. Change the smallest amount that makes the title and description accurate; list what you changed and why when returning it.
+7. **Improving an existing ticket.** Keep the tracker's existing key, labels, and links. Change the smallest amount that makes the title and description accurate, then list what you changed and why after the ticket.
+
+## Description shape
+
+Use these headings, in this order. Skip a heading when there is nothing to put under it.
+
+**Background**
+2-4 sentences: what is happening today and why it is a problem. Link the source thread or ticket on its own line.
+
+**Goal**
+One sentence: the state we want after this ticket is done.
+
+**Scope**
+In: what this ticket covers.
+Out: what it deliberately does not.
+
+**Tasks** (only if known)
+Numbered steps.
+
+**Done when**
+Observable checks, not activities. "Upload failures leave no orphaned asset within 5 minutes", not "fix the cleanup".
+
+**Notes**
+Constraints, decisions already made, open questions written as questions.
+
+## Output format
+
+- Return the title on the first line, then the description as plain markdown ready to paste into the tracker. Do not wrap the ticket in a code fence; I paste it as-is and the fence breaks the formatting.
+- Use `##` for the section headings in the returned ticket.
+- When I asked to improve an existing ticket, add a short "What changed" list after the ticket.
 
 ## Rules
 
 - Plain English, short sentences, no jargon the team did not already use.
 - Facts over adjectives. "Misleading" becomes what is wrong and what it should say instead.
 - Ticket keys as plain text; links on their own line.
-- Do not state priority, estimate, assignee, or due date unless I gave them. Leave the field blank or write `(not set)`.
+- Do not state priority, estimate, assignee, or due date unless I gave them. Leave the field out or write `(not set)`.
 
 ## Done when
 
