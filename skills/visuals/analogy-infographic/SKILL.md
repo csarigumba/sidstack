@@ -35,7 +35,20 @@ Find the analogy first, map every part of the concept onto it, then draw one gra
 
 ## Artboard spec
 
-- `<main class="board">` with fixed `width`/`height` in px equal to the chosen size, centered in the viewport and scaled to fit with `transform: scale()` computed from the viewport (so it previews on any screen without reflow). `@page { size: <W>px <H>px; margin: 0 }`.
+- `<main class="board">` with fixed `width`/`height` in px equal to the chosen size, scaled to fit the viewport with `transform: scale()` (so it previews on any screen without reflow). Use exactly this positioning; do not center the board with flex or grid, because those size the track to the unscaled board and the scaled board then overflows the clipped body:
+
+  ```css
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg) }
+  .board { position: absolute; top: 50%; left: 50%; width: <W>px; height: <H>px;
+           transform-origin: center; transform: translate(-50%, -50%) scale(var(--s, 1)) }
+  @page { size: <W>px <H>px; margin: 0 }
+  @media print { .board { position: static; transform: none } }
+  ```
+  ```js
+  const fit = () => document.documentElement.style.setProperty('--s', Math.min(innerWidth / <W>, innerHeight / <H>));
+  addEventListener('resize', fit); fit();
+  ```
+- Nothing inside the board may overflow it: `board.scrollHeight` and `scrollWidth` must equal the artboard size. Give the scene SVG a `viewBox` whose aspect matches the slot left after the title, callout, footer and gaps, so `width: 100%` never makes it taller than planned.
 - Background `--bg`. A 48px safe margin all round. Title at the top: 6-8 words, `--font-display`, the claim ("API keys are VIP wristbands"), plus a one-line subtitle in `--ink-2`.
 - The analogy scene is one drawn SVG filling the middle, in `--surface` and `--surface-2` with the section accent for the parts that matter. Each mapped part has a small mono label and, where the layout allows, a thin leader line to a 1-line "real meaning" caption. Connections are SVG paths with arrowheads; label the arrow only if the label adds meaning.
 - One key-insight callout near the bottom: the single most important sentence, in a card with the accent left bar and soft fill, 18-24px. Styled differently from everything else.
@@ -53,7 +66,7 @@ Find the analogy first, map every part of the concept onto it, then draw one gra
 
 ## Done when
 
-The mapping table has no gaps, the artboard is the chosen size and scales to the window, the text is under 50 words, the drawing explains the concept without the text, and the design-system self-check passes.
+The mapping table has no gaps, the artboard is the chosen size, scales to the window with no part clipped, and nothing inside it overflows; the text is under 50 words, the drawing explains the concept without the text, and the design-system self-check passes.
 
 ## Origin
 
