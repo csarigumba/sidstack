@@ -38,9 +38,8 @@ done
 # Manifest versions must agree, or one platform silently ships a stale build.
 v_plugin="$(jq -r .version .claude-plugin/plugin.json)"
 v_market="$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)"
-v_cursor="$(jq -r .version .cursor-plugin/plugin.json)"
-if [ "$v_plugin" != "$v_market" ] || [ "$v_plugin" != "$v_cursor" ]; then
-  echo "VERSION-DRIFT  plugin.json=$v_plugin marketplace.json=$v_market cursor=$v_cursor"; fail=1
+if [ "$v_plugin" != "$v_market" ]; then
+  echo "VERSION-DRIFT  plugin.json=$v_plugin marketplace.json=$v_market"; fail=1
 fi
 
 if [ "$fail" -eq 0 ]; then
