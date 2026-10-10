@@ -24,15 +24,17 @@ echo '@/path/to/sidstack/AGENTS.md' >> ~/.claude/CLAUDE.md
 cp /path/to/sidstack/AGENTS.md ~/.codex/AGENTS.md
 ```
 
-**Codex / Hermes / anything else that reads `SKILL.md`**: symlink or copy `skills/*` into the agent's skills directory. Nothing in `skills/` depends on a platform.
+**Codex / Hermes / anything else that reads `SKILL.md`**: symlink or copy `skills/*/*` into the agent's skills directory (or point it at `skills/` if it walks folders). Nothing in `skills/` depends on a platform.
 
 ## Layout
 
 ```
 AGENTS.md               global rules: responses, think before coding, simplicity, surgical changes, verify
 .claude/CLAUDE.md       imports AGENTS.md (one source; a root CLAUDE.md fails plugin validation)
-skills/                 one folder per skill, flat (the plugin loader does not read nested folders)
-  principle-*/          one principle per folder, one rule each
+skills/                 one folder per skill, grouped by category
+  writing/              drafting, proofreading, replies, tickets
+  thinking/             grilling, visuals, knowledge share
+  principles/           one principle per folder, one rule each
 docs/PHILOSOPHY.md      index of principles + how to add one
 hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
 .claude-plugin/         Claude Code manifest + single-plugin marketplace
@@ -40,7 +42,7 @@ scripts/validate.sh     structural checks (frontmatter, names, version drift, ho
 .github/workflows/      runs the checks, guard tests, shellcheck, `claude plugin validate --strict`
 ```
 
-`skills/` stays flat on purpose: Claude Code's plugin loader only finds `skills/<name>/SKILL.md`, one level deep (tested; a nested skill is silently skipped). Grouping lives in the tables below and in `principle-*` / `workflow-*` prefixes.
+Each category folder is listed in `plugin.json` under `skills` (an array of directories). Claude Code only loads what is listed, so `scripts/validate.sh` fails when a category is missing from the manifest. Skill names are global in the plugin namespace (`/sidstack:proofreading`, no category in the name), so two categories cannot share a name; the validator checks that too.
 
 ## Skills
 
@@ -88,10 +90,10 @@ Every pattern has a case in `hooks/test-guard.sh` (151 asserts, runs in CI). To 
 
 ## Adding a skill
 
-1. `mkdir skills/<name>` and write `SKILL.md` with `name: <name>` and a `description` that states the trigger in the words I would actually say. The description is the only thing loaded until the skill fires.
+1. `mkdir skills/<category>/<name>` and write `SKILL.md` with `name: <name>` and a `description` that states the trigger in the words I would actually say. The description is the only thing loaded until the skill fires.
 2. Procedure first, in execution order. One clause of why per rule. Say what the skill must not invent. End with the gate that means done.
 3. If it is adapted from elsewhere, add an `## Origin` section: source link, author, license, what changed.
-4. Add it to the right table above.
+4. Add it to the right table above. New category: add `"./skills/<category>/"` to `plugin.json` `skills`.
 5. Bump `version` in both manifests under `.claude-plugin/` (`scripts/validate.sh` checks they agree). Installed copies only update when the version changes.
 6. `scripts/validate.sh && claude plugin validate . --strict`.
 
