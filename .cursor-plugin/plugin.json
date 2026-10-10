@@ -1,0 +1,15 @@
+{
+  "name": "sidstack",
+  "displayName": "sidstack",
+  "version": "0.1.0",
+  "description": "Sid's personal agent stack: skills, workflows, and principles for how I work.",
+  "author": {
+    "name": "Cedric Sarigumba"
+  },
+  "homepage": "https://github.com/csarigumba/sidstack",
+  "repository": "https://github.com/csarigumba/sidstack",
+  "license": "MIT",
+  "keywords": ["skills", "principles", "workflow", "agent-style"],
+  "category": "developer-tools",
+  "skills": "./skills/"
+}

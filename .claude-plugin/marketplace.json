@@ -1,0 +1,18 @@
+{
+  "name": "sidstack",
+  "description": "Sid's personal agent stack: skills, workflows, and principles.",
+  "owner": {
+    "name": "Cedric Sarigumba",
+    "url": "https://github.com/csarigumba"
+  },
+  "plugins": [
+    {
+      "name": "sidstack",
+      "source": "./",
+      "description": "Sid's personal agent stack: skills, workflows, and principles for how I work. Agent-agnostic SKILL.md content with thin manifests for Claude Code and Cursor.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["skills", "principles", "workflow"]
+    }
+  ]
+}
