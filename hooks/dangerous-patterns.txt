@@ -1,0 +1,51 @@
+# Dangerous-command denylist for hooks/deny-dangerous.sh.
+# One POSIX ERE per line (grep -E). Lines starting with # are comments.
+# "Command position" = start of a line or right after ; && || |, so a word
+# inside a commit message or a string does not match.
+# Every pattern here has a case in hooks/test-guard.sh. Add the test first.
+
+# --- filesystem destruction ---
+# rm of /, /*, ~, ~/, ~/*, $HOME, /Users (any flags, any order)
+(^[[:space:]]*|[;&|][[:space:]]*)rm[[:space:]]+(-[^[:space:]]+[[:space:]]+)*("?\$HOME"?/?\*?|~/?\*?|/\*?|/Users/?)([[:space:]]|$|["'])
+# sudo rm of anything
+(^[[:space:]]*|[;&|][[:space:]]*)sudo[[:space:]]+(-[^[:space:]]+[[:space:]]+)*rm([[:space:]]|$)
+# raw writes to block devices
+(^|[[:space:]])dd[[:space:]].*of=/dev/(r?disk|sd|nvme|hd|mmcblk)
+>[[:space:]]*/dev/(r?disk|sd|nvme|hd|mmcblk)
+(^|[[:space:]])mkfs(\.[A-Za-z0-9]+)?([[:space:]]|$)
+(^|[[:space:]])diskutil[[:space:]]+(eraseDisk|eraseVolume|partitionDisk|zeroDisk|randomDisk|secureErase|reformat)
+# chmod/chown on /
+(^|[[:space:]])chmod[[:space:]]+(-[^[:space:]]+[[:space:]]+)*[0-7]{3,4}[[:space:]]+/([[:space:]]|$)
+(^|[[:space:]])chown[[:space:]]+(-[^[:space:]]+[[:space:]]+)*[^[:space:]]+[[:space:]]+/([[:space:]]|$)
+# fork bomb
+:\(\)[[:space:]]*\{[^}]*:\|:[^}]*\}
+
+# --- remote code execution ---
+(curl|wget)[[:space:]].*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|k|da)?sh([[:space:]]|$)
+
+# --- git history and remote damage ---
+git[[:space:]]+push[[:space:]]+([^[:space:]]+[[:space:]]+)*(--force|-f)([[:space:]]|$)
+git[[:space:]]+push[[:space:]]+([^[:space:]]+[[:space:]]+)*(--delete|-d|:[^[:space:]]+|\+[^[:space:]]+)([[:space:]]|$)
+git[[:space:]]+reflog[[:space:]]+expire[[:space:]].*--expire(-unreachable)?=now
+git[[:space:]]+gc[[:space:]].*--prune=(now|all)([[:space:]]|$)
+
+# --- GitHub destructive ---
+gh[[:space:]]+(repo|release|secret|variable|ssh-key|gpg-key|codespace|extension|cache|label|ruleset)[[:space:]]+delete([[:space:]]|$)
+gh[[:space:]]+api[[:space:]].*(-X|--method)[[:space:]=]*[Dd][Ee][Ll][Ee][Tt][Ee]([[:space:]]|$)
+gh[[:space:]]+repo[[:space:]]+edit[[:space:]].*--visibility[[:space:]=]*public
+
+# --- password managers and secret stores (command position only) ---
+(^[[:space:]]*|[;&|][[:space:]]*)bws?([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)lpass([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)keepassxc-cli([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)rbw([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)nordpass([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)pass([[:space:]]|$)
+(^[[:space:]]*|[;&|][[:space:]]*)op[[:space:]]+(read|item|items|run|inject|document|signin|vault|user|group|connect|get|list|create|edit|delete|events-api|service-account|ssh|plugin)([[:space:]]|$)
+\.password-store
+(^|[[:space:]])security[[:space:]]+(-[^[:space:]]+[[:space:]]+)*dump-keychain
+(^|[[:space:]])gpg[[:space:]].*--export-secret-(keys?|subkeys?)
+# tampering with the password manager apps themselves
+/Applications/(1Password|NordPass|Bitwarden|KeePassXC|LastPass)[^[:space:]]*\.app
+(^|[[:space:]])open[[:space:]]+-a[[:space:]]+["']?(1Password|NordPass|Bitwarden|KeePassXC|LastPass)
+brew[[:space:]]+(uninstall|remove|rm)[[:space:]].*(1password|[Nn]ord[Pp]ass|[Bb]itwarden|[Kk]ee[Pp]ass|[Ll]ast[Pp]ass)

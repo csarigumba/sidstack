@@ -14,6 +14,14 @@ jobs:
       - name: Structural checks (platform-agnostic)
         run: scripts/validate.sh
 
+      - name: Dangerous-command guard tests
+        run: hooks/test-guard.sh
+
+      - name: Shellcheck hook scripts
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck hooks/*.sh scripts/*.sh
+
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code@latest
 
@@ -24,7 +32,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           git fetch origin "${{ github.base_ref }}" --depth=1
-          changed=$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- skills docs | head -n1 || true)
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- skills docs hooks | head -n1 || true)
           [ -n "$changed" ] || exit 0
           old=$(git show "origin/${{ github.base_ref }}:.claude-plugin/plugin.json" 2>/dev/null | jq -r .version || echo "")
           new=$(jq -r .version .claude-plugin/plugin.json)

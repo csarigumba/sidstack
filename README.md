@@ -23,6 +23,7 @@ Skills show up namespaced: `/sidstack:plain-writing`.
 skills/                 the only part that matters; one folder per skill
   principle-*/          one principle per folder, one rule each
 docs/PHILOSOPHY.md      how I work + index of principles
+hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
 .claude-plugin/         Claude Code manifest + single-plugin marketplace
 scripts/validate.sh     structural checks (frontmatter, names, version drift)
 .github/workflows/      runs the checks + `claude plugin validate --strict`
@@ -46,6 +47,20 @@ Naming: flat `skills/` with prefixes. `principle-*` for principles, `workflow-*`
 Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos.
 
 Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.
+
+## Hooks
+
+`hooks/deny-dangerous.sh` runs before every shell command the agent executes (Claude Code `PreToolUse`, matcher `Bash`) and blocks anything matching `hooks/dangerous-patterns.txt`: `rm -rf` of `/` or home, `sudo rm`, raw disk writes, `curl | sh`, `git push --force`, branch deletes, history pruning, `gh ... delete`, making a repo public, and any read of a password manager (`op`, `bw`, `pass`, `lpass`, keychain dumps, secret-key exports). Blocked commands return exit 2 with the matched pattern, and the agent is told not to retry.
+
+The hook is installed automatically with the plugin. It fails open: no `jq` or no patterns file means allow, so a broken hook never freezes every shell call.
+
+Other agents that pass hook JSON on stdin and honor exit 2 (Codex) can point at the same script:
+
+```json
+{ "hooks": { "PreToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "/path/to/sidstack/hooks/deny-dangerous.sh" } ] } ] } }
+```
+
+Every pattern has a case in `hooks/test-guard.sh` (151 asserts, runs in CI). To add a pattern: add the block case and a nearby allow case to the test first, then the regex. Override the list with `SIDSTACK_DANGEROUS_PATTERNS=/path/to/file`.
 
 ## Principles
 
