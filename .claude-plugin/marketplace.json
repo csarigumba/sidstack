@@ -10,7 +10,7 @@
       "name": "sidstack",
       "source": "./",
       "description": "Sid's personal agent stack: skills, workflows, and principles for how I work. Agent-agnostic SKILL.md content with a thin Claude Code manifest.",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "category": "productivity",
       "tags": [
         "skills",

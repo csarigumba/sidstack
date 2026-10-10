@@ -33,7 +33,7 @@ AGENTS.md               global rules: responses, think before coding, simplicity
 .claude/CLAUDE.md       imports AGENTS.md (one source; a root CLAUDE.md fails plugin validation)
 skills/                 one folder per skill, grouped by category
   writing/              drafting, proofreading, replies, tickets
-  thinking/             grilling, visuals, knowledge share
+  thinking/             grilling, sparring, visuals, knowledge share, flashcards
   principles/           one principle per folder, one rule each
 docs/PHILOSOPHY.md      index of principles + how to add one
 hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
@@ -63,6 +63,8 @@ Each category folder is listed in `plugin.json` under `skills` (an array of dire
 | `grill-me` | I have a plan or design and want it stress-tested one question at a time before building. |
 | `show-me` | I would understand the topic faster as a diagram, call tree, diff, or one HTML page than as prose. |
 | `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
+| `sparring-partner` | `/spar`: I must state my position first, then it attacks it hard before giving its own view. For judgment calls, not lookups. |
+| `anki` | turn source material into Anki cloze cards (Wozniak's 20 rules), or `/curate` an existing deck down 40-60%. Outputs a pipe-separated `.txt`. |
 
 **Principles**
 
