@@ -42,7 +42,8 @@ AGENTS.md               global rules: responses, think before coding, simplicity
 .claude/CLAUDE.md       imports AGENTS.md (one source; a root CLAUDE.md fails plugin validation)
 skills/                 one folder per skill, grouped by category
   writing/              drafting, proofreading, replies, tickets
-  thinking/             grilling, sparring, visuals, knowledge share, flashcards
+  thinking/             grilling, sparring, diagrams in chat, knowledge share, flashcards
+  visuals/              HTML pages, slide decks, infographics; one shared design system
   principles/           one principle per folder, one rule each
 docs/PHILOSOPHY.md      index of principles + how to add one
 hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
@@ -74,6 +75,14 @@ Each category folder is listed in `plugin.json` under `skills` (an array of dire
 | `eng-knowledge-share` | turn a brainstormed topic into one visual HTML explainer page plus a short team post. Manual, `/sidstack:eng-knowledge-share <notes.md>`. |
 | `sparring-partner` | `/spar`: I must state my position first, then it attacks it hard before giving its own view. For judgment calls, not lookups. |
 | `anki` | turn source material into Anki cloze cards (Wozniak's 20 rules), or `/curate` an existing deck down 40-60%. Outputs a pipe-separated `.txt`. |
+
+**Visuals** (one design system across all three: warm paper, five accents rotated per section, system fonts, drawn SVG figures, auto dark mode, no external requests, no emoji)
+
+| skill | use it when |
+|---|---|
+| `explainer-page` | one concept, system, comparison, process, or recap as a multi-section HTML page with drawn figures. |
+| `slide-deck` | a presentation as a self-contained HTML deck: keyboard/touch nav, speaker notes, print to PDF, under 15 slides. |
+| `analogy-infographic` | one graphic that explains one concept through a real-world analogy, on a fixed-size artboard ready to screenshot. |
 
 **Principles**
 
