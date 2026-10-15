@@ -28,6 +28,7 @@ Default to What / So What / Now What. Use PREP only for the one part of the upda
    - The talk track with bold labels (**Headline**, **What**, **So What**, **Now What**, plus **PREP** if used), written as quotes I can say.
    - One optional line, if there is a side topic.
    - Up to three short notes: what I cut and where it lives, any gap I must fill, and when to switch to PREP if they push back.
+   - If I want something to glance at while presenting, hand the track to the `speaker-mind-map` skill.
 
 ## Rules
 
