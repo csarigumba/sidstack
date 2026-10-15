@@ -64,6 +64,7 @@ Each category folder is listed in `plugin.json` under `skills` (an array of dire
 | `proofreading` | proofread, "rewrite in my tone", "improve this", or draft a workplace message or slide script for me. Smallest change that fixes it. |
 | `reply-to-thread` | I paste a thread or comment: what are they saying, what do they want from me, my position, then a reply in my voice. |
 | `ticket-writing` | write, improve, simplify, or split a ticket or issue for any tracker. No names, no invented facts, done-when checks. |
+| `status-update` | share a status update or proposal in a meeting: What / So What / Now What to report, PREP when I need to win the point. Under a minute, out loud. |
 | `bro` | the last message was jargon; restate it like one human talking to another. |
 
 **Thinking and teaching**
