@@ -45,7 +45,10 @@ skills/                 one folder per skill, grouped by category
   thinking/             grilling, sparring, diagrams in chat, knowledge share, flashcards
   visuals/              HTML pages, slide decks, infographics; one shared design system
   principles/           one principle per folder, one rule each
+  harness/              ship (autonomous goal-to-PR mode) + create-verification-skill
+agents/                 plugin subagents used by ship: builder (worktree-isolated), verifier, reviewer
 docs/PHILOSOPHY.md      index of principles + how to add one
+docs/specs, docs/plans  design and implementation records for larger pieces
 hooks/                  dangerous-command guard (PreToolUse on Bash) + denylist + tests
 .claude-plugin/         Claude Code manifest + single-plugin marketplace
 scripts/validate.sh     structural checks (frontmatter, names, version drift, hook regexes)
@@ -92,8 +95,34 @@ Each category folder is listed in `plugin.json` under `skills` (an array of dire
 | skill | rule |
 |---|---|
 | `principle-verify-before-claiming` | Check the real artifact after the last change before saying done, fixed, passing, or merged. If you did not check, say so. |
+| `principle-prove-it-works` | Verify against the real artifact (run it, read the value, inspect the diff), not a proxy or a self-report. Script the check when you can and keep the output. |
+| `principle-fresh-eyes-review` | The agent that wrote a change does not grade it. A reviewer with a clean context reads the diff and the evidence and returns ship, fix, or stop. |
 
 Full index and reasoning: [docs/PHILOSOPHY.md](docs/PHILOSOPHY.md).
+
+## Harness
+
+`/sidstack:ship <goal>` drives a goal to a pull request with no human in the loop. The shape, after Lauren Tan's pstack: trust comes from the agent proving its own work on the real app and from a reviewer that did not write the code.
+
+```
+goal -> contract (done-when checks) -> verify skill exists? (else create it)
+     -> plan, split by files -> one builder per task, in parallel, each in its own git worktree
+     -> merge into ship/<slug>, run the suite -> verifier drives the real app, saves evidence
+     -> reviewer (clean context) grades diff + evidence -> PR with the evidence report
+```
+
+| skill | use it when |
+|---|---|
+| `ship` | `/sidstack:ship <goal>`: build, prove, review, and open a PR unattended. Never merges; I merge. Done-gate: test output, evidence files, a `ship` verdict, and a PR URL (or "PR skipped: <reason>"), all produced after the last change. |
+| `create-verification-skill` | the project has no scripted way to launch the real app and prove a feature. Generates `.claude/skills/verify-<app>/` with a feature map, proves it once, for web, CLI, or service surfaces. `ship` runs it first when it is missing. |
+
+| agent | job |
+|---|---|
+| `builder` | one task from the plan, in an isolated worktree; tests, proves its slice, commits, reports the branch. Never merges or opens PRs. |
+| `verifier` | drives the integrated branch per the verify skill; one artifact per done-when check. Edits nothing. |
+| `reviewer` | fresh context; reads diff, plan, evidence; returns `ship`, `fix`, or `stop` with file:line findings. Read-only. |
+
+Run state lives in the target project under `.sidstack/runs/<run>/` (`plan.md`, `tests.txt`, `evidence/`, `verify.md`, `review.md`, `report.md`), gitignored on first use. Under `ship` the agent may add dev-only dependencies the verify skill needs and must list them in the report; nothing else in `AGENTS.md` is relaxed. Design: [docs/specs/2026-10-16-ship-harness.md](docs/specs/2026-10-16-ship-harness.md).
 
 Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos. Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.
 
