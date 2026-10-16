@@ -15,7 +15,7 @@ Read `docs/PHILOSOPHY.md` if the repo has one. The principles that govern this r
 1. If the repo has no commits, make an empty initial commit; worktrees need a base.
 2. If `.gitignore` lacks `.sidstack/` or `.claude/worktrees/`, append both and commit that alone (`chore: ignore sidstack run state and worktrees`).
 3. `RUN=.sidstack/runs/$(date +%Y%m%d-%H%M%S)-<slug>`; `mkdir -p $RUN/evidence`. Everything this run writes goes there.
-4. Note `DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#origin/##' || git rev-parse --abbrev-ref HEAD)`. Builders' worktrees branch from the default branch, so integration must too.
+4. Builders' worktrees branch from `worktree.baseRef`; the default is the repo's default branch, which is wrong when shipping on top of another branch. Ensure `.claude/settings.json` has `{"worktree": {"baseRef": "head"}}` (merge into the existing file if there is one) and commit it with the gitignore change. Then `BASE=$(git rev-parse --abbrev-ref HEAD)`; integration branches from `BASE` too.
 
 ## Steps
 
@@ -44,7 +44,7 @@ When a builder returns `blocked`, re-dispatch that task once with the blocker te
 ### 5. Integrate
 
 ```
-git checkout -b ship/<slug> $DEFAULT
+git checkout -b ship/<slug> $BASE
 for each builder branch: git merge --no-ff <branch> -m "merge: <task id>"
 ```
 
@@ -58,7 +58,7 @@ Dispatch `sidstack:verifier` with `branch=ship/<slug>`, `verify_skill=VERIFY`, t
 
 ### 7. Review
 
-Dispatch `sidstack:reviewer` with `base=$DEFAULT`, `head=ship/<slug>`, `plan=$RUN/plan.md`, `evidence_dir`, and the verifier table. Save to `$RUN/review.md`.
+Dispatch `sidstack:reviewer` with `base=$BASE`, `head=ship/<slug>`, `plan=$RUN/plan.md`, `evidence_dir`, and the verifier table. Save to `$RUN/review.md`.
 
 - `ship` → step 8.
 - `fix` → re-dispatch the owning builders with the findings, then repeat steps 5–7. At most two fix rounds; then stop and report.
@@ -69,7 +69,7 @@ Dispatch `sidstack:reviewer` with `base=$DEFAULT`, `head=ship/<slug>`, `plan=$RU
 Write `$RUN/report.md` from `references/report-template.md`. Then:
 
 ```
-gh pr create --base $DEFAULT --head ship/<slug> --title "<slug>" --body-file $RUN/report.md
+gh pr create --base $BASE --head ship/<slug> --title "<slug>" --body-file $RUN/report.md
 ```
 
 No remote or no `gh`: skip, and write `PR skipped: <reason>` in the report. Never merge, never enable auto-merge.
