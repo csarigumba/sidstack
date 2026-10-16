@@ -122,6 +122,8 @@ goal -> contract (done-when checks) -> verify skill exists? (else create it)
 | `verifier` | drives the integrated branch per the verify skill; one artifact per done-when check. Edits nothing. |
 | `reviewer` | fresh context; reads diff, plan, evidence; returns `ship`, `fix`, or `stop` with file:line findings. Read-only. |
 
+Unattended, from a shell: `CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0 claude -p "/sidstack:ship <goal>" --permission-mode auto --max-turns 250`. The env var matters: print mode otherwise stops background subagents (the builders) 10 minutes after the last turn. On a machine with managed settings that block `--plugin-dir`, install from the marketplace and `claude plugin update sidstack@sidstack` after each push.
+
 Run state lives in the target project under `.sidstack/runs/<run>/` (`plan.md`, `tests.txt`, `evidence/`, `verify.md`, `review.md`, `report.md`), gitignored on first use. Under `ship` the agent may add dev-only dependencies the verify skill needs and must list them in the report; nothing else in `AGENTS.md` is relaxed. Design: [docs/specs/2026-10-16-ship-harness.md](docs/specs/2026-10-16-ship-harness.md).
 
 Nothing in this repo is specific to an employer, a client, or a project; those skills stay in their own repos. Skills adapted from someone else's work say so in an `## Origin` section at the bottom of the file, with the source and what changed.

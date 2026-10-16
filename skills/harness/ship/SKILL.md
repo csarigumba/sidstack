@@ -10,6 +10,8 @@ You own the outcome, not the typing. Builders write code in parallel; a verifier
 
 Read `docs/PHILOSOPHY.md` if the repo has one. The principles that govern this run: **prove-it-works** (every claim has an artifact) and **fresh-eyes-review** (the writer never grades).
 
+Unattended invocation: `CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0 claude -p "/sidstack:ship <goal>" --permission-mode auto --max-turns 250`. Without the env var, print mode stops background subagents 10 minutes after the last turn, which kills builders mid-task and leaves their worktrees on disk.
+
 ## Setup, once per repo
 
 1. If the repo has no commits, make an empty initial commit; worktrees need a base.

@@ -1,6 +1,6 @@
 {
   "name": "sidstack",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Sid's personal agent stack: skills, workflows, and principles for how I work. Agent-agnostic SKILL.md content with a thin Claude Code manifest.",
   "author": {
     "name": "Cedric Sarigumba",
