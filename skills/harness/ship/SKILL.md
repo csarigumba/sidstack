@@ -33,11 +33,22 @@ Look for `.claude/skills/verify-*/SKILL.md`. If none exists, run `create-verific
 
 ### 3. Plan and split
 
-Append to `$RUN/plan.md` a `## Tasks` table: `id | task | done_when (one check id) | files_allowed | test_command`. Split only along lines that share no files. A task that would need another task's file is one task. One task is a valid plan. Write this before dispatching anything; the plan is what the reviewer grades against.
+Split by surface, not by file. A goal that touches two surfaces (server and page, CLI and library, API and client) is two tasks. The thing that lets them run in parallel is a written **contract**, so write it first:
+
+1. `## Contract` in `$RUN/plan.md`: every interface the tasks share, exact. Routes with request and response JSON, DOM handles (`#id`, `data-*`), function signatures, file formats, env vars. A builder on one side codes against this text, not against the other side's code.
+2. `## Tasks` table: `id | task | done_when (check ids) | files_allowed | test_command`. Rules:
+   - One task per surface. One task per independent feature within a surface when they share no files.
+   - Each task owns its own test file (`test-<id>.js` or the repo's equivalent) and runs only that. Shared test files are not a reason to merge tasks.
+   - Shared config files (`package.json`, `.gitignore`, lockfiles) may appear in several tasks' `files_allowed` as **append-only**: a builder may add a line or a key, never change or remove one. Conflicts there are resolved at integration.
+   - A task that must change another task's source file is a dependency, not a split: fold them.
+   - One task is still a valid plan when the goal has one surface and one feature; say why.
+3. `## Integration test`: what proves the two sides work together, driven through the verify skill after merge. That is your step 5 job, not a builder's.
+
+Write all of this before dispatching anything; the plan is what the reviewer grades against.
 
 ### 4. Fan out
 
-Dispatch one `sidstack:builder` per task, all at once, each with: `goal`, `task`, `done_when`, `files_allowed`, `verify_skill=VERIFY`, `test_command`. Builders run in their own worktrees and return a branch name.
+Dispatch one `sidstack:builder` per task, all in a single turn so they run at the same time, each with: `goal`, `task`, `done_when`, `files_allowed`, the `## Contract` text, `verify_skill=VERIFY`, `test_command`. Builders run in their own worktrees and return a branch name. Record each builder's branch and start time in `$RUN/plan.md` under `## Builders`.
 
 When a builder returns `blocked`, re-dispatch that task once with the blocker text in the brief. A second block marks the task blocked in `$RUN/plan.md`; continue with the rest.
 
@@ -50,7 +61,7 @@ for each builder branch: git merge --no-ff <branch> -m "merge: <task id>"
 
 A conflict between two builder branches: resolve it if it is a trivial overlap; otherwise abort that merge, re-dispatch the second task on top of `ship/<slug>` with `files_allowed` unchanged, and merge its new branch. Then remove every builder worktree (`git worktree remove <path>` and `git branch -D <branch>`); `-p` runs do not clean them up for you.
 
-Run the full test suite once on `ship/<slug>`. Save output to `$RUN/tests.txt`. Red means fix (re-dispatch the owning task with the failure) before anything else.
+Run the full test suite once on `ship/<slug>` (every task's test file), then the plan's `## Integration test` through the verify skill. Save output to `$RUN/tests.txt`. Red means fix (re-dispatch the owning task with the failure) before anything else.
 
 ### 6. Prove
 

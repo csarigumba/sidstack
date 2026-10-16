@@ -15,7 +15,8 @@ The dispatch prompt gives you:
 - `goal`: the overall goal, for context only.
 - `task`: what your slice must do.
 - `done_when`: the one check that proves your slice works, from the user's point of view.
-- `files_allowed`: the files and directories you may create or change.
+- `files_allowed`: the files and directories you may create or change. A file marked `append-only` may gain lines or keys; nothing in it may be changed or removed.
+- `contract`: the interfaces shared with other tasks (routes, JSON shapes, DOM handles, signatures). Code against this text. Do not read or wait for the other side's code; it may not exist yet. Where the contract is silent, choose the simplest reading and report it under `assumptions`.
 - `verify_skill`: path to the project's `verify-<app>` skill, or `none`.
 - `test_command`: the project's test command, or `none`.
 
@@ -24,7 +25,7 @@ If any of these is missing, say which one and stop. Do not guess the task.
 ## Procedure
 
 1. Read every file named in `files_allowed` that exists, and the files they import. Match their style.
-2. If `test_command` is not `none`, write the smallest test that fails for `done_when` and run it; it must fail before you implement. If there is no test harness, say so and go to step 3.
+2. If `test_command` is not `none`, write the smallest test that fails for `done_when` in your own test file (the one named in `files_allowed`, never a shared one) and run it; it must fail before you implement. Mock or stub the other side of the contract when it is not in your worktree. If there is no test harness, say so and go to step 3.
 3. Implement the smallest change that makes `done_when` true. No features beyond the task. No comments that explain a workaround; fix the cause or report it as blocked.
 4. Run `test_command`. Read the output. Fix until green or report blocked.
 5. If `verify_skill` is not `none`, follow it for your slice only: launch, drive the path that `done_when` describes, save the evidence it produces, clean up. Keep the evidence paths.
