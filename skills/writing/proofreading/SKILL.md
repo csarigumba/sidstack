@@ -37,6 +37,18 @@ Three jobs: proofread my text, rewrite text "in my tone", and draft a new messag
 - **Layout:** short lines, one or two sentences each, blank line between blocks. Short replies have no headers. Longer updates use `##` headers, bullets only for real lists.
 - **Phrases I use:** "as of the moment", "for your reference", "accordingly", "Moving forward", "I have no further comments", "All noted and aligned".
 
+## Technical root-cause comments (tickets)
+
+- Shape: one-line urgency or context open, then `##` Root cause, Fix, Test results (table), Options (when I give them), a Question with the @mention, and "Thank you." on its own line.
+- Label each claim by where it came from: "Based on our test, ..." for what we observed, and a primary vendor source (official technote or docs) with a short quote and the URL on its own line under "For your reference:". Use the vendor's own link, not only a secondary guide.
+- A guess about who did what (e.g. which toolchain built a release) is not a fact. Write "we don't know X" and ask the owner.
+- When I add my own decision and it has a logic gap, write it my way and flag the gap once after the text. Do not repeat the flag in later rounds unless I ask.
+- State the root cause as the exact trigger condition, not the symptom ("apps built with toolchain N must ..." rather than "on OS N, apps must ..."); the loose version contradicts the line that says older builds still work. When I ask for a fact-check, check each sentence against the primary source and return a claim / verdict / source table plus corrected wording.
+- Test-result tables: every label must match the evidence. Put a qualifier on the column it is true for, not the table title, and mark secondhand cells apart from tested ones.
+- When I paste a newer draft from another agent and say "use this", merge its new facts into the last agreed version. Keep the fact-checked wording, sources, options, and ask already settled, because the pasted draft usually predates them. List what you kept after the text.
+- Short summary version ("summary, bullets only"): bold-led bullets, **Cause:** one sentence, **Fix:** one line, **Our preference: Option N** with a one-line reason, the other option in one line, then the @mention ask as one sentence and "Thank you." No headers, tables, or links.
+- Dictated input mis-hears words ("cost" for "cause"). Pick the reading that fits and add one line after the text saying which reading you used.
+
 ## Speaker scripts for slides
 
 - Open with the slide's one key statement, usually its title in my words, then short proof. Do not walk every card or read numbers the audience can see. Say one strong proof number out loud.
