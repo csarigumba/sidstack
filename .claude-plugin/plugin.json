@@ -19,7 +19,8 @@
     "./skills/writing/",
     "./skills/thinking/",
     "./skills/visuals/",
-    "./skills/principles/"
+    "./skills/principles/",
+    "./skills/harness/"
   ],
   "hooks": "./hooks/hooks.json"
 }
