@@ -7,6 +7,10 @@ The rules every agent follows when working with me live in [`AGENTS.md`](../AGEN
 | principle | group | rule |
 |---|---|---|
 | [verify-before-claiming](../skills/principles/principle-verify-before-claiming/SKILL.md) | verification | Check the real artifact after the last change before saying done, fixed, passing, or merged. If you did not check, say "not verified". |
+| [prove-it-works](../skills/principles/principle-prove-it-works/SKILL.md) | verification | Verify against the real artifact (run it, read the value, inspect the diff), not a proxy or a self-report. Script the check when you can and keep the output. |
+| [fresh-eyes-review](../skills/principles/principle-fresh-eyes-review/SKILL.md) | verification | The agent that wrote a change does not grade it. A reviewer with a clean context reads the diff and the evidence and returns ship, fix, or stop. |
+
+The `ship` skill (`skills/harness/ship/`) is the routing skill that reads this index at task start.
 
 Groups to grow into: `core`, `architecture`, `verification`, `delegation`, `meta`.
 
