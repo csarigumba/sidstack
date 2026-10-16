@@ -76,7 +76,24 @@ while IFS= read -r pattern || [ -n "$pattern" ]; do
   [ "$rc" -le 1 ] || { echo "BAD-REGEX  $pattern"; fail=1; }
 done < hooks/dangerous-patterns.txt
 
+# Plugin subagents: agents/<name>.md with frontmatter name == filename stem; Claude Code skips a file
+# with no name silently, and a mismatched name breaks every "sidstack:<name>" reference in the skills.
+agent_count=0
+for f in agents/*.md; do
+  [ -e "$f" ] || continue
+  agent_count=$((agent_count + 1))
+  stem="$(basename "$f" .md)"
+  if [ "$(head -n1 "$f")" != "---" ]; then
+    echo "NO-FRONTMATTER  $f"; fail=1; continue
+  fi
+  afm="$(awk 'NR==1{next} /^---$/{exit} {print}' "$f")"
+  a_name="$(printf '%s\n' "$afm" | sed -n 's/^name:[[:space:]]*//p' | head -n1 | tr -d '"'"'")"
+  a_desc="$(printf '%s\n' "$afm" | sed -n 's/^description:[[:space:]]*//p' | head -n1)"
+  [ "$a_name" = "$stem" ] || { echo "AGENT-NAME-MISMATCH  $f: frontmatter '$a_name' != file '$stem'"; fail=1; }
+  [ -n "$a_desc" ] || { echo "AGENT-NO-DESCRIPTION  $f"; fail=1; }
+done
+
 if [ "$fail" -eq 0 ]; then
-  echo "ok: $count skills, version $v_plugin, hooks executable, patterns valid"
+  echo "ok: $count skills, $agent_count agents, version $v_plugin, hooks executable, patterns valid"
 fi
 exit "$fail"
